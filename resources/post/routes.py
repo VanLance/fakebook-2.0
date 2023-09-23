@@ -1,22 +1,23 @@
-from uuid import uuid4
 from flask.views import MethodView
 from flask_smorest import abort
+from flask_jwt_extended import jwt_required, get_jwt
 
 from resources.post.PostModel import PostModel
 
 from . import bp
-from db import posts
 from schemas import PostSchema, PostUpdateSchema
 from resources.post.PostModel import PostModel
 
 @bp.route('/post/<post_id>')
 class Post(MethodView):
   
+  @jwt_required()
   @bp.response(200, PostSchema)
   def get(self, post_id):
     post = PostModel.query.get_or_404(post_id)
     return post
 
+  @jwt_required()
   def delete(self, post_id):
     post = PostModel.query.get_or_404(post_id)
     post_body = post.body
@@ -37,10 +38,13 @@ class Post(MethodView):
 @bp.route('/post')
 class PostList(MethodView):
   
+  @jwt_required()
   @bp.response(200, PostSchema(many=True))
   def get(self):
+    jwt = get_jwt()
     return PostModel.query.all()
 
+  @jwt_required()
   @bp.arguments(PostSchema)
   @bp.response(201, PostSchema)
   def post(self, post_data):
