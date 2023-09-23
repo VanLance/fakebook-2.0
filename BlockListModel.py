@@ -7,3 +7,7 @@ class BlockListModel(db.Model):
 
   def __repr__(self):
     return f'<Revoked Token: {self.token}'
+  
+  def save(self):
+    db.session.add(self)
+    db.session.commit()

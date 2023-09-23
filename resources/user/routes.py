@@ -1,7 +1,8 @@
 from flask.views import MethodView
 from flask_smorest import abort
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
+from BlockListModel import BlockListModel
 
 from resources.user.UserModel import UserModel
 
@@ -88,3 +89,11 @@ class UserLogin(MethodView):
       access_token = create_access_token(identity=user.id)
       return {'access_token': access_token}, 200
     abort(401, message='Invalid Username/Password') 
+
+@bp.route('/logout')
+class UserLogOut(MethodView):
+  @jwt_required()
+  def post(self):
+    revoked = BlockListModel(token = get_jwt()['jti'])
+    revoked.save()
+    return {"message": "Successfully logged out"}, 200
