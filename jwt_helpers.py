@@ -32,6 +32,7 @@ def missing_token_callback(error):
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(jwt_header, jwt_payload):
+    print(jwt_payload['jti'], '===========================================\n\n\n')
     return BlockListModel.query.filter_by(token=jwt_payload['jti']).first()
 
 @jwt.revoked_token_loader

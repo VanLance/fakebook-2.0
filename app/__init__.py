@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_smorest import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -24,3 +24,4 @@ api.register_blueprint(user_bp)
 
 from resources.user.UserModel import UserModel
 from resources.post.PostModel import PostModel
+from . import BlockListModel
